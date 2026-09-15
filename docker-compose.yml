@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # DB
+  database:
+    image: mysql:8.0
+    container_name: coworking_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: coworking
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+
+  # PHP (Symfony)
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: coworking_php
+    volumes:
+      - .:/var/www/project
+    depends_on:
+      - database
+
+  # NGINX
+  nginx:
+    image: webdevops/nginx:alpine
+    container_name: coworking_nginx
+    ports:
+      - "8081:80"
+    volumes:
+      - .:/var/www/project
+    environment:
+      - WEB_DOCUMENT_ROOT=/var/www/project/public
+      - WEB_PHP_SOCKET=php:9000
+    depends_on:
+      - php
+
+volumes:
+  db-data:
