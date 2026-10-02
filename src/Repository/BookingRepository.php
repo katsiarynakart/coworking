@@ -17,4 +17,13 @@ class BookingRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Booking::class);
     }
+
+    public function save(Booking $booking, bool $flush): void
+    {
+        $this->getEntityManager()->persist($booking);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
 }

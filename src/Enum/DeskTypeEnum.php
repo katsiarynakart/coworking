@@ -6,6 +6,6 @@ namespace App\Enum;
 
 enum DeskTypeEnum: string
 {
-    case COMMON = 'C';
-    case PREMIUM = 'P';
+    case COMMON = 'COMMON';
+    case PREMIUM = 'PREMIUM';
 }

@@ -97,4 +97,11 @@ class Booking
 
         return $this;
     }
+
+    public function calculateTotalPrice(): static
+    {
+        $this->totalPrice = $this->desk->getPricePerHour() * $this->endTime->diff($this->startTime)->h;
+
+        return $this;
+    }
 }
