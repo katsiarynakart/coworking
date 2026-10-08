@@ -30,7 +30,12 @@ class Desk
     /**
      * @var Collection<int, Booking>
      */
-    #[ORM\OneToMany(targetEntity: Booking::class, mappedBy: 'desk', orphanRemoval: true)]
+    #[ORM\OneToMany(
+        targetEntity: Booking::class,
+        mappedBy: 'desk',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
     private Collection $bookings;
 
     public function __construct()

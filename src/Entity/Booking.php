@@ -21,7 +21,10 @@ class Booking
     private ?Desk $desk = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(
+        nullable: false,
+        onDelete: 'CASCADE'
+    )]
     private ?User $user = null;
 
     #[ORM\Column]
