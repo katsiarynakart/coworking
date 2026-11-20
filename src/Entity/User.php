@@ -95,7 +95,7 @@ class User
     {
         if (!$this->bookings->contains($booking)) {
             $this->bookings->add($booking);
-            $booking->setUserId($this);
+            $booking->setUser($this);
         }
 
         return $this;
@@ -106,7 +106,7 @@ class User
         if ($this->bookings->removeElement($booking)) {
             // set the owning side to null (unless already changed)
             if ($booking->getUser() === $this) {
-                $booking->setUserId(null);
+                $booking->setUser(null);
             }
         }
 

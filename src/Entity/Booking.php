@@ -7,6 +7,7 @@ namespace App\Entity;
 use App\Repository\BookingRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
 class Booking
@@ -18,19 +19,23 @@ class Booking
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Desk $desk = null;
+    private Desk $desk;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     #[ORM\JoinColumn(
         nullable: false,
         onDelete: 'CASCADE'
     )]
-    private ?User $user = null;
+    private User $user;
 
     #[ORM\Column]
     private DateTimeImmutable $startTime;
 
     #[ORM\Column]
+    #[Assert\GreaterThan(
+        propertyPath: 'startTime',
+        message: 'The end time must be after the start time.'
+    )]
     private DateTimeImmutable $endTime;
 
     #[ORM\Column]
@@ -46,7 +51,7 @@ class Booking
         return $this->desk;
     }
 
-    public function setDesk(?Desk $desk): static
+    public function setDesk(Desk $desk): static
     {
         $this->desk = $desk;
 
@@ -58,7 +63,7 @@ class Booking
         return $this->user;
     }
 
-    public function setUserId(?User $user): static
+    public function setUser(User $user): static
     {
         $this->user = $user;
 
@@ -94,16 +99,12 @@ class Booking
         return $this->totalPrice;
     }
 
-    public function setTotalPrice(int $totalPrice): static
-    {
-        $this->totalPrice = $totalPrice;
-
-        return $this;
-    }
-
     public function calculateTotalPrice(): static
     {
-        $this->totalPrice = $this->desk->getPricePerHour() * $this->endTime->diff($this->startTime)->h;
+        $seconds = $this->endTime->getTimestamp() - $this->startTime->getTimestamp();
+        $hours = (int)ceil($seconds / 3600);
+
+        $this->totalPrice = $this->desk->getPricePerHour() * $hours;
 
         return $this;
     }
